@@ -40,7 +40,6 @@ int main(int argc, char **argv) {
 				strcpy(name, "[unknown]");
 		}
 		printf("%s %s\n", addr, name);
-		
 	}
 
 	free(ii);

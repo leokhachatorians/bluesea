@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
 	loc_addr.rc_channel = (uint8_t) 1;
 	bind(s, (struct sockaddr *)&loc_addr, sizeof(loc_addr));
 
+	printf("Listening\n");
 	// put socket into listening mode
 	listen(s, 1);
 
@@ -32,8 +33,10 @@ int main(int argc, char **argv) {
 
 	// read data from client
 	bytes_read = read(client, buf, sizeof(buf));
-	if (bytes_read > 0) {
-		printf("received: %s\n", buf);
+	while (bytes_read > 0) {
+		printf("received: %s", buf);
+		memset(buf, 0, sizeof(buf));
+		bytes_read = read(client, buf, sizeof(buf));
 	}
 
 	// close connection

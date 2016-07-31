@@ -6,11 +6,12 @@
 
 int main(int argc, char **argv) {
 	struct sockaddr_rc addr = { 0 };
-	int s, status;
-	char dest[18] = "01:23:45:67:89:AB";
+	int sock, status;
+	char dest[18] = "5C:F3:70:75:C1:27";
+	char message[1000];
 
 	// allocate socket
-	s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+	sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
 	// set the connection parameters
 	addr.rc_family = AF_BLUETOOTH;
@@ -18,15 +19,22 @@ int main(int argc, char **argv) {
 	str2ba(dest, &addr.rc_bdaddr);
 
 	// connect to server
-	status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
+	status = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
 
-	// send a message
-	if (status == 0) {
-		status = write(s, "hello", 6);
-	}
 	if (status < 0) {
 		perror("yeah no");
+		return 0;
 	}
-	close(s);
+
+	// send a message
+	printf("Message: ");
+	fgets(message, 1000, stdin);
+	while (status >= 0) {
+		status = write(sock, message, strlen(message));
+		printf("Message: ");
+		fgets(message, 1000, stdin);
+	}
+
+	close(sock);
 	return 0;
 }
